@@ -1,0 +1,104 @@
+{
+    "selected_model": "Gradient Boosting Classifier (Production)",
+    "trained_at": "2026-09-19T17:57:39.359734",
+    "dataset_rows": 7043,
+    "train_samples": 5634,
+    "test_samples": 1409,
+    "features": {
+        "numerical": [
+            "tenure",
+            "MonthlyCharges",
+            "TotalCharges"
+        ],
+        "categorical": [
+            "gender",
+            "SeniorCitizen",
+            "Partner",
+            "Dependents",
+            "PhoneService",
+            "MultipleLines",
+            "InternetService",
+            "OnlineSecurity",
+            "OnlineBackup",
+            "DeviceProtection",
+            "TechSupport",
+            "StreamingTV",
+            "StreamingMovies",
+            "Contract",
+            "PaperlessBilling",
+            "PaymentMethod"
+        ]
+    },
+    "metrics": {
+        "accuracy": 0.8006,
+        "precision": 0.6545,
+        "recall": 0.5267,
+        "f1_score": 0.5837,
+        "roc_auc": 0.8433
+    },
+    "benchmark_comparison": {
+        "Logistic Regression (Baseline)": {
+            "accuracy": 0.7381,
+            "precision": 0.5043,
+            "recall": 0.7834,
+            "f1_score": 0.6136,
+            "roc_auc": 0.8417
+        },
+        "Random Forest Classifier": {
+            "accuracy": 0.7559,
+            "precision": 0.5272,
+            "recall": 0.7781,
+            "f1_score": 0.6285,
+            "roc_auc": 0.8401
+        },
+        "Gradient Boosting Classifier (Production)": {
+            "accuracy": 0.8006,
+            "precision": 0.6545,
+            "recall": 0.5267,
+            "f1_score": 0.5837,
+            "roc_auc": 0.8433
+        }
+    },
+    "top_features": [
+        {
+            "feature": "num__tenure",
+            "importance": 0.2765
+        },
+        {
+            "feature": "cat__InternetService_Fiber optic",
+            "importance": 0.1823
+        },
+        {
+            "feature": "cat__PaymentMethod_Electronic check",
+            "importance": 0.1166
+        },
+        {
+            "feature": "num__TotalCharges",
+            "importance": 0.1108
+        },
+        {
+            "feature": "num__MonthlyCharges",
+            "importance": 0.0823
+        },
+        {
+            "feature": "cat__Contract_Two year",
+            "importance": 0.0472
+        },
+        {
+            "feature": "cat__Contract_One year",
+            "importance": 0.0427
+        },
+        {
+            "feature": "cat__PaperlessBilling_Yes",
+            "importance": 0.0208
+        },
+        {
+            "feature": "cat__OnlineSecurity_Yes",
+            "importance": 0.0166
+        },
+        {
+            "feature": "cat__TechSupport_Yes",
+            "importance": 0.0141
+        }
+    ]
+}

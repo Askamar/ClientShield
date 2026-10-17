@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Churn Prediction & Retention Intelligence Platform</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Main Container -->
+  <div class="app-layout">
+    
+    <!-- Top Navigation Bar -->
+    <header class="navbar">
+      <div class="nav-brand">
+        <div class="brand-icon">⚡</div>
+        <div>
+          <h1>Telco Churn AI</h1>
+          <p class="brand-tagline">Customer Retention & Risk Intelligence Platform</p>
+        </div>
+      </div>
+      <div class="nav-actions">
+        <span class="status-indicator">
+          <span class="pulse-dot"></span>
+          Model: Gradient Boosting (ROC-AUC 0.843)
+        </span>
+      </div>
+    </header>
+
+    <!-- Top KPI Highlights Bar -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <span class="kpi-label">Analyzed Customers</span>
+        <h3 id="kpi-total-customers">7,043</h3>
+        <span class="kpi-sub">Telco Dataset Base</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Overall Churn Rate</span>
+        <h3 id="kpi-churn-rate">26.5%</h3>
+        <span class="kpi-sub">1,869 Historical Churners</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Average Monthly Bill</span>
+        <h3 id="kpi-avg-bill">$64.76</h3>
+        <span class="kpi-sub">Range: $18.25 - $118.75</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Model Accuracy</span>
+        <h3 id="kpi-accuracy">80.1%</h3>
+        <span class="kpi-sub">Test Set Evaluation</span>
+      </div>
+    </div>
+
+    <!-- 1-Click Quick Presets Bar -->
+    <div class="presets-section">
+      <div class="presets-header">
+        <span>⚡ Quick Test Archetypes:</span>
+      </div>
+      <div class="presets-buttons" id="presets-container">
+        <button type="button" class="btn btn-preset" onclick="applyPreset('high_risk')">
+          🚨 High Risk (New Fiber User)
+        </button>
+        <button type="button" class="btn btn-preset" onclick="applyPreset('moderate_risk')">
+          ⚠️ Moderate Risk (Mid-Tenure Streamer)
+        </button>
+        <button type="button" class="btn btn-preset" onclick="applyPreset('loyal_low_risk')">
+          🛡️ Low Risk (2-Year Contract Veteran)
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Workspace (Form + Real-Time Prediction) -->
+    <main class="workspace-grid">
+      
+      <!-- Customer Profile Form -->
+      <section class="card form-card">
+        <div class="card-header">
+          <h2>Customer Account Profile</h2>
+          <p>Adjust tenure, billing, contract, and add-on subscriptions in real time.</p>
+        </div>
+
+        <form id="churn-form" onsubmit="handlePredictSubmit(event)">
+          
+          <!-- Financial & Tenure Sliders -->
+          <div class="form-section-title">Tenure & Billing Attributes</div>
+          <div class="form-grid-2">
+            
+            <div class="form-group">
+              <div class="slider-header">
+                <label for="input-tenure">Tenure (Months with Company)</label>
+                <span id="display-tenure" class="slider-val">12 mo</span>
+              </div>
+              <input type="range" id="input-tenure" min="0" max="72" value="12" step="1" oninput="updateTenureDisplay(this.value)">
+              <div class="range-marks">
+                <span>0 mo (New)</span>
+                <span>36 mo</span>
+                <span>72 mo (6 yrs)</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="slider-header">
+                <label for="input-monthly">Monthly Recurring Charge</label>
+                <span id="display-monthly" class="slider-val">$65.00</span>
+              </div>
+              <input type="range" id="input-monthly" min="18" max="120" value="65" step="0.5" oninput="updateMonthlyDisplay(this.value)">
+              <div class="range-marks">
+                <span>$18.00</span>
+                <span>$70.00</span>
+                <span>$120.00</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Account & Contract -->
+          <div class="form-section-title">Contract & Payment Terms</div>
+          <div class="form-grid-3">
+            
+            <div class="form-group">
+              <label for="input-contract">Contract Commitment</label>
+              <select id="input-contract" required onchange="triggerAutoPredict()">
+                <option value="Month-to-month" selected>Month-to-month (High Hazard)</option>
+                <option value="One year">One year</option>
+                <option value="Two year">Two year (Highest Loyalty)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="input-payment">Payment Method</label>
+              <select id="input-payment" required onchange="triggerAutoPredict()">
+                <option value="Electronic check" selected>Electronic check (Manual)</option>
+                <option value="Mailed check">Mailed check</option>
+                <option value="Bank transfer (automatic)">Bank transfer (Automatic)</option>
+                <option value="Credit card (automatic)">Credit card (Automatic)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="input-paperless">Paperless Billing</label>
+              <select id="input-paperless" onchange="triggerAutoPredict()">
+                <option value="Yes" selected>Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+
+          </div>
+
+          <!-- Network & Connectivity -->
+          <div class="form-section-title">Internet & Phone Services</div>
+          <div class="form-grid-3">
+            
+            <div class="form-group">
+              <label for="input-internet">Internet Connection</label>
+              <select id="input-internet" required onchange="onInternetChange()">
+                <option value="DSL">DSL</option>
+                <option value="Fiber optic" selected>Fiber optic</option>
+                <option value="No">No Internet Service</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="input-phone">Phone Service</label>
+              <select id="input-phone" onchange="triggerAutoPredict()">
+                <option value="Yes" selected>Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="input-multilines">Multiple Lines</label>
+              <select id="input-multilines" onchange="triggerAutoPredict()">
+                <option value="No" selected>No</option>
+                <option value="Yes">Yes</option>
+                <option value="No phone service">No phone service</option>
+              </select>
+            </div>
+
+          </div>
+
+          <!-- Add-on Subscriptions -->
+          <div class="form-section-title">Value-Added Services (Key Retention Hooks)</div>
+          <div class="form-grid-4">
+            
+            <div class="form-group">
+              <label for="input-security">Online Security</label>
+              <select id="input-security" onchange="triggerAutoPredict()">
+                <option value="No" selected>No</option>
+                <option value="Yes">Yes</option>
+                <option value="No internet service">No internet</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="input-backup">Online Backup</label>
+              <select id="input-backup" onchange="triggerAutoPredict()">
+                <option value="No" selected>No</option>
+                <option value="Yes">Yes</option>
+                <option value="No internet service">No internet</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="input-tech">Tech Support</label>
+              <select id="input-tech" onchange="triggerAutoPredict()">
+                <option value="No" selected>No</option>
+                <option value="Yes">Yes</option>
+                <option value="No internet service">No internet</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="input-device">Device Protection</label>
+              <select id="input-device" onchange="triggerAutoPredict()">
+                <option value="No" selected>No</option>
+                <option value="Yes">Yes</option>
+                <option value="No internet service">No internet</option>
+              </select>
+            </div>
+
+          </div>
+
+          <!-- Demographics -->
+          <div class="form-section-title">Customer Demographics</div>
+          <div class="form-grid-4">
+            
+            <div class="form-group">
+              <label for="input-senior">Senior Citizen</label>
+              <select id="input-senior" onchange="triggerAutoPredict()">
+                <option value="0" selected>No</option>
+                <option value="1">Yes</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="input-partner">Partner</label>
+              <select id="input-partner" onchange="triggerAutoPredict()">
+                <option value="No" selected>No</option>
+                <option value="Yes">Yes</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="input-dependents">Dependents</label>
+              <select id="input-dependents" onchange="triggerAutoPredict()">
+                <option value="No" selected>No</option>
+                <option value="Yes">Yes</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="input-gender">Gender</label>
+              <select id="input-gender" onchange="triggerAutoPredict()">
+                <option value="Male" selected>Male</option>
+                <option value="Female">Female</option>
+              </select>
+            </div>
+
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-lg" id="btn-predict">
+              ⚡ Calculate Churn Probability
+            </button>
+            <button type="button" class="btn btn-outline" onclick="resetForm()">
+              Reset Defaults
+            </button>
+          </div>
+
+        </form>
+      </section>
+
+      <!-- Real-Time Results & Recommendation Output -->
+      <section class="card results-card">
+        
+        <div class="card-header">
+          <h2>Predictive Risk Intelligence</h2>
+          <p>Real-time machine learning inference & retention recommendations</p>
+        </div>
+
+        <div id="results-placeholder" class="results-placeholder" style="display: none;">
+          <div class="empty-icon">📊</div>
+          <h3>Awaiting Profile Inputs</h3>
+          <p>Select customer attributes or click one of the quick archetypes above.</p>
+        </div>
+
+        <div id="results-content" class="results-content">
+          
+          <!-- Risk Gauge & Primary Verdict -->
+          <div class="gauge-container">
+            <div class="radial-gauge">
+              <svg viewBox="0 0 120 120" class="gauge-svg">
+                <circle class="gauge-bg" cx="60" cy="60" r="50"></circle>
+                <circle id="gauge-bar" class="gauge-fill" cx="60" cy="60" r="50"></circle>
+              </svg>
+              <div class="gauge-center">
+                <span id="res-prob-val" class="gauge-number">65.5%</span>
+                <span class="gauge-caption">CHURN PROBABILITY</span>
+              </div>
+            </div>
+
+            <div class="verdict-box">
+              <div class="verdict-header">
+                <span id="res-risk-badge" class="badge badge-danger">High Risk</span>
+                <h3 id="res-verdict-title">Customer Likely to Churn</h3>
+              </div>
+              <p id="res-verdict-desc">
+                High probability of cancellation detected. Proactive retention intervention is strongly recommended.
+              </p>
+              <div class="stay-prob-box">
+                <span>Retention Probability:</span>
+                <strong id="res-stay-prob">34.5%</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Identified Risk Drivers -->
+          <div class="analysis-box">
+            <h4 class="analysis-title">
+              <span>⚠️ Identified Churn Risk Drivers</span>
+            </h4>
+            <ul id="res-risk-drivers" class="drivers-list">
+              <!-- Dynamically populated -->
+            </ul>
+          </div>
+
+          <!-- Actionable Retention Recommendations -->
+          <div class="analysis-box retention-box">
+            <h4 class="analysis-title">
+              <span>🛡️ Recommended Retention Strategies</span>
+            </h4>
+            <ul id="res-retention-actions" class="retention-list">
+              <!-- Dynamically populated -->
+            </ul>
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- Dataset Insights Drawer -->
+    <section class="card dataset-insights">
+      <div class="card-header">
+        <h3>📊 Telco Customer Dataset Demographics & Contract Churn Breakdown</h3>
+      </div>
+      <div class="insights-grid" id="insights-container">
+        <div class="insight-item">
+          <strong>Month-to-Month Contracts</strong>
+          <div class="insight-bar-track">
+            <div class="insight-bar-fill bg-rose" style="width: 42.7%;"></div>
+          </div>
+          <small>42.7% Churn Rate (3,875 Customers)</small>
+        </div>
+        <div class="insight-item">
+          <strong>One-Year Contracts</strong>
+          <div class="insight-bar-track">
+            <div class="insight-bar-fill bg-amber" style="width: 11.3%;"></div>
+          </div>
+          <small>11.3% Churn Rate (1,473 Customers)</small>
+        </div>
+        <div class="insight-item">
+          <strong>Two-Year Contracts</strong>
+          <div class="insight-bar-track">
+            <div class="insight-bar-fill bg-emerald" style="width: 2.8%;"></div>
+          </div>
+          <small>2.8% Churn Rate (1,695 Customers)</small>
+        </div>
+        <div class="insight-item">
+          <strong>Fiber Optic Internet Users</strong>
+          <div class="insight-bar-track">
+            <div class="insight-bar-fill bg-rose" style="width: 41.9%;"></div>
+          </div>
+          <small>41.9% Churn Rate (3,096 Customers)</small>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>Customer Churn Prediction System • Powered by Scikit-learn Gradient Boosting & Flask</p>
+    </footer>
+
+  </div>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
